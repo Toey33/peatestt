@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry Form</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        header {
+            background-color: #c5a6ff;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            padding: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input, select {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #c5a6ff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #c5a6ff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <header>
+        <h2>Data Entry Form</h2>
+    </header>
+
+    <form id="dataForm">
+        <label for="guardianId">ID ผู้ปกครอง:</label>
+        <input type="text" id="guardianId" name="guardianId" required>
+
+        <label for="warrantyDate">วันรับประกัน:</label>
+        <input type="date" id="warrantyDate" name="warrantyDate" required>
+
+        <label for="assetCode">รหัสทรัพย์สิน:</label>
+        <input type="text" id="assetCode" name="assetCode" required>
+
+        <label for="serialNumber">Serial Number:</label>
+        <input type="text" id="serialNumber" name="serialNumber" required>
+
+        <label for="assetType">ประเภท:</label>
+        <select id="assetType" name="assetType" required>
+            <option value="Laptop">โน็ตบุ๊ค</option>
+            <option value="Computer">คอมพิวเตอร์</option>
+            <option value="Monitor">จอภาพ</option>
+            <option value="Mouse">เม้าส์</option>
+            <option value="Keyboard">คีย์บอร์ด</option>
+            <!-- เพิ่มประเภทอื่น ๆ ตามต้องการ -->
+        </select>
+
+        <button type="button" onclick="addData()">เพิ่มข้อมูล</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID ผู้ปกครอง</th>
+                <th>วันรับประกัน</th>
+                <th>รหัสทรัพย์สิน</th>
+                <th>Serial Number</th>
+                <th>ประเภท</th>
+            </tr>
+        </thead>
+        <tbody id="dataBody">
+            <!-- ข้อมูลที่ถูกเพิ่มจะแสดงที่นี่ -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function addData() {
+        var guardianId = document.getElementById('guardianId').value;
+        var warrantyDate = document.getElementById('warrantyDate').value;
+        var assetCode = document.getElementById('assetCode').value;
+        var serialNumber = document.getElementById('serialNumber').value;
+        var assetType = document.getElementById('assetType').value;
+
+        var tableBody = document.getElementById('dataBody');
+
+        var newRow = tableBody.insertRow(tableBody.rows.length);
+        var cells = [];
+
+        for (var i = 0; i < 5; i++) {
+            cells[i] = newRow.insertCell(i);
+        }
+
+        cells[0].innerHTML = guardianId;
+        cells[1].innerHTML = warrantyDate;
+        cells[2].innerHTML = assetCode;
+        cells[3].innerHTML = serialNumber;
+        cells[4].innerHTML = assetType;
+
+        // Clear form fields after adding data
+        document.getElementById('dataForm').reset();
+    }
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wed1</title>
+    <style>
+        /* เพิ่มสไตล์ให้กับปุ่ม */
+        .custom-button {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #663399;
+            color: #fff;
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-button:hover {
+            background-color: #512e5f;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- เพิ่มปุ่มลิงก์ไปยังหน้า QRCODE.html -->
+    <a href="QRCODE.html" class="custom-button">ไปที่หน้าทำ QRCODE</a>
+
+    <!-- ตัวอย่างเนื้อหาหน้า wed1.html ที่คุณมีอยู่ -->
+
+</body>
+</html>
+
