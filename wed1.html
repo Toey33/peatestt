@@ -194,3 +194,135 @@
     <a href="QRCODE.html" class="custom-button">ไปที่หน้าทำ QRCODE</a>
 
     <!-- ตัวอย่างเนื้อหาหน้า wed1.html ที่คุณมีอยู่ -->
+    <!-- ใส่ด้านล่าง script ในตัวอย่าง HTML -->
+
+<script>
+    function addData() {
+        var guardianId = document.getElementById('guardianId').value;
+        var warrantyDate = document.getElementById('warrantyDate').value;
+        var assetCode = document.getElementById('assetCode').value;
+        var serialNumber = document.getElementById('serialNumber').value;
+        var assetType = document.getElementById('assetType').value;
+
+        var tableBody = document.getElementById('dataBody');
+
+        var newRow = tableBody.insertRow(tableBody.rows.length);
+        var cells = [];
+
+        for (var i = 0; i < 5; i++) {
+            cells[i] = newRow.insertCell(i);
+        }
+
+        cells[0].innerHTML = guardianId;
+        cells[1].innerHTML = warrantyDate;
+        cells[2].innerHTML = assetCode;
+        cells[3].innerHTML = serialNumber;
+        cells[4].innerHTML = assetType;
+
+        // Clear form fields after adding data
+        document.getElementById('dataForm').reset();
+
+        // Save data to localStorage
+        var newData = {
+            guardianId: guardianId,
+            warrantyDate: warrantyDate,
+            assetCode: assetCode,
+            serialNumber: serialNumber,
+            assetType: assetType
+        };
+
+        // Retrieve existing data from localStorage or create an empty array
+        var storedData = JSON.parse(localStorage.getItem('storedData')) || [];
+
+        // Add the new data to the array
+        storedData.push(newData);
+
+        // Save the array back to localStorage
+        localStorage.setItem('storedData', JSON.stringify(storedData));
+    }
+</script>
+<!-- ใส่ด้านล่าง script ในตัวอย่าง HTML -->
+<script>
+    window.onload = function() {
+        // Get stored data from localStorage
+        var storedData = JSON.parse(localStorage.getItem('storedData')) || [];
+
+        // Display stored data in the table
+        displayStoredData(storedData);
+    };
+
+    function displayStoredData(data) {
+        var tableBody = document.getElementById('dataBody');
+
+        // Clear the table before displaying data
+        tableBody.innerHTML = '';
+
+        // Display data in the table
+        for (var i = 0; i < data.length; i++) {
+            var newRow = tableBody.insertRow(tableBody.rows.length);
+            var cells = [];
+
+            for (var j = 0; j < 5; j++) {
+                cells[j] = newRow.insertCell(j);
+            }
+
+            cells[0].innerHTML = data[i].guardianId;
+            cells[1].innerHTML = data[i].warrantyDate;
+            cells[2].innerHTML = data[i].assetCode;
+            cells[3].innerHTML = data[i].serialNumber;
+            cells[4].innerHTML = data[i].assetType;
+        }
+    }
+</script>
+<!-- แก้ไขและเพิ่มโค้ดในตัวอย่าง HTML -->
+
+<script>
+    // ... (โค้ดอื่น ๆ)
+
+    function displayStoredData(data) {
+        var tableBody = document.getElementById('dataBody');
+
+        // Clear the table before displaying data
+        tableBody.innerHTML = '';
+
+        // Display data in the table
+        for (var i = 0; i < data.length; i++) {
+            var newRow = tableBody.insertRow(tableBody.rows.length);
+            var cells = [];
+
+            for (var j = 0; j < 5; j++) {
+                cells[j] = newRow.insertCell(j);
+                cells[j].innerHTML = data[i][Object.keys(data[i])[j]];
+            }
+
+            // Add a "Delete" button in each row
+            var deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = function(i) {
+                return function() {
+                    deleteData(i); // Call the deleteData function with the row index
+                };
+            }(i);
+
+            cells[5] = newRow.insertCell(5);
+            cells[5].appendChild(deleteButton); // Add the button to the last cell
+        }
+    }
+
+    // Add the deleteData function
+    function deleteData(index) {
+        // Retrieve existing data from localStorage
+        var storedData = JSON.parse(localStorage.getItem('storedData')) || [];
+
+        // Remove the data at the specified index
+        storedData.splice(index, 1);
+
+        // Save the updated array back to localStorage
+        localStorage.setItem('storedData', JSON.stringify(storedData));
+
+        // Display the updated data in the table
+        displayStoredData(storedData);
+    }
+</script>
+
+
