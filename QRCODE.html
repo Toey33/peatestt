@@ -87,7 +87,18 @@
         <tbody id="qrcodeTableBody"></tbody>
     </table>
 
+    <button onclick="saveData()">Save Data</button>
+
     <script>
+        function getSavedData() {
+            var savedData = localStorage.getItem('qrcodeData');
+            return savedData ? JSON.parse(savedData) : [];
+        }
+
+        function saveToLocalStorage(data) {
+            localStorage.setItem('qrcodeData', JSON.stringify(data));
+        }
+
         function generateQRCode() {
             var url = document.getElementById('urlInput').value;
 
@@ -96,7 +107,6 @@
                 return;
             }
 
-            // Add QR code to the table
             var tableBody = document.getElementById('qrcodeTableBody');
             var newRow = tableBody.insertRow(tableBody.rows.length);
             var cell1 = newRow.insertCell(0);
@@ -112,14 +122,42 @@
             cell2.innerHTML = url;
             cell3.innerHTML = '<button class="delete-btn" onclick="deleteRow(this)">Delete</button>';
 
-            // Clear input field
+            var existingData = getSavedData();
+            existingData.push({ qrCode: qrcode, url: url });
+            saveToLocalStorage(existingData);
+
             document.getElementById('urlInput').value = '';
         }
 
         function deleteRow(btn) {
             var row = btn.parentNode.parentNode;
             row.parentNode.removeChild(row);
+
+            var existingData = getSavedData();
+            existingData.splice(row.rowIndex - 1, 1);
+            saveToLocalStorage(existingData);
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var existingData = getSavedData();
+            var tableBody = document.getElementById('qrcodeTableBody');
+
+            existingData.forEach(function (data) {
+                var newRow = tableBody.insertRow(tableBody.rows.length);
+                var cell1 = newRow.insertCell(0);
+                var cell2 = newRow.insertCell(1);
+                var cell3 = newRow.insertCell(2);
+
+                var qrcode = new QRCode(cell1, {
+                    text: data.url,
+                    width: 100,
+                    height: 100
+                });
+
+                cell2.innerHTML = data.url;
+                cell3.innerHTML = '<button class="delete-btn" onclick="deleteRow(this)">Delete</button>';
+            });
+        });
     </script>
 
 </body>
