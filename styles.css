@@ -1,0 +1,212 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #3a0c4e; /* สีม่วงเข้มเป็นพื้นหลังหน้าเว็บ */
+    color: #000; /* สีดำเป็นสีตัวอักษร */
+}
+
+header {
+    background-color: #4a156b; /* สีม่วงเข็มสำหรับส่วนหัวของเว็บ */
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+}
+
+nav li {
+    margin-right: 15px;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 8px 15px;
+    border: 2px solid #c5a6ff;
+    border-radius: 5px;
+    color: #c5a6ff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #c5a6ff;
+    color: white;
+}
+
+.hero {
+    background-color: #4a156b; /* สีม่วงเข็มสำหรับส่วน Hero */
+    color: white;
+    text-align: center;
+    padding: 50px;
+}
+
+.hero h1 {
+    font-size: 2.5em;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.cta-button {
+    background-color: #c5a6ff;
+    color: white;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.cta-button:hover {
+    transform: scale(1.1);
+}
+
+.services {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.services h2 {
+    font-size: 2em;
+    margin-bottom: 30px;
+}
+
+.service-card {
+    margin-bottom: 30px;
+}
+
+.service-card img {
+    max-width: 100%;
+    height: auto;
+}
+
+.contact {
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 50px 0;
+}
+
+.contact h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.contact p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.footer {
+    background-color: #4a156b; /* สีม่วงเข็มสำหรับ Footer */
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links a {
+    color: white;
+    margin-right: 20px;
+    text-decoration: none;
+}
+
+.footer-logo img {
+    max-width: 70%;
+    height: auto;
+}
+
+button {
+    background-color: #c5a6ff;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: transform 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+.button {
+    background-color: #c5a6ff;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.services .button,
+.contact .button {
+    padding: 10px 20px;
+    font-size: 1em;
+}
+
+.services .button:hover,
+.contact .button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+.service-card img {
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.service-card img:hover {
+    transform: scale(1.1);
+}
+.logo-container img {
+    max-width: 70%;
+    height: auto;
+    transition: transform 0.3s ease-in-out;
+}
+
+.logo-container img:hover {
+    transform: scale(1.1);
+}
+.button {
+    background-color: #c5a6ff;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+/* สไตล์สำหรับตัวหนังสือหลักใน hero section */
+.hero h1 {
+    font-size: 3em;
+    color: #ffff; /* สีม่วงเข้ม */
+    margin-bottom: 10px;
+  }
+  
+  .hero p {
+    font-size: 1.5em;
+    color: #ffff; /* สีดำ */
+    margin-bottom: 20px;
+  }
+  

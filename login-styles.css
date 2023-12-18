@@ -1,0 +1,44 @@
+/* styles.css */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #3a0c4e;
+  color: #000;
+}
+
+/* ... (รหัส CSS อื่น ๆ) ... */
+
+.hero img {
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.hero img:hover {
+  transform: scale(1.1);
+}
+
+/* login-styles.css */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #6b3cff;
+  background-image: url('Digital and Communication Technology Diviion.png');
+  background-position: top center;
+  background-size: cover;
+  position: relative;
+}
+
+.login-container {
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ... (รหัส CSS อื่น ๆ) ... */
+

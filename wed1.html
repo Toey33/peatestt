@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Entry Form</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        header {
+            background-color: #24292e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 48%;
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 12px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .delete-button {
+            width: 100%;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <header>
+            <h2>Data Entry Form</h2>
+        </header>
+
+        <form id="dataForm">
+            <label for="guardianId">ID ผู้ปกครอง:</label>
+            <input type="text" id="guardianId" name="guardianId" required>
+
+            <label for="warrantyDate">วันรับประกัน:</label>
+            <input type="text" id="warrantyDate" name="warrantyDate" pattern="[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}" placeholder="วว/ดด/ปปปป" required>
+
+            <label for="assetCode">รหัสทรัพย์สิน:</label>
+            <input type="text" id="assetCode" name="assetCode" required>
+
+            <label for="serialNumber">Serial Number:</label>
+            <input type="text" id="serialNumber" name="serialNumber" required>
+
+            <label for="assetType">ประเภท:</label>
+            <select id="assetType" name="assetType" required>
+                <option value="Laptop">โน็ตบุ๊ค</option>
+                <option value="Computer">คอมพิวเตอร์</option>
+                <option value="Monitor">จอภาพ</option>
+                <option value="Mouse">เม้าส์</option>
+                <option value="Keyboard">คีย์บอร์ด</option>
+            </select>
+
+            <div class="button-container">
+                <button type="button" onclick="addData()">เพิ่มข้อมูล</button>
+                <button type="button" onclick="exportToExcel()">บันทึกลง Excel</button>
+            </div>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ผู้ปกครอง</th>
+                    <th>วันรับประกัน</th>
+                    <th>รหัสทรัพย์สิน</th>
+                    <th>Serial Number</th>
+                    <th>ประเภท</th>
+                    <th>ลบ</th>
+                </tr>
+            </thead>
+            <tbody id="dataBody">
+                <!-- ข้อมูลที่ถูกเพิ่มจะแสดงที่นี่ -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function addData() {
+            var guardianId = document.getElementById('guardianId').value;
+            var warrantyDate = document.getElementById('warrantyDate').value;
+            var assetCode = document.getElementById('assetCode').value;
+            var serialNumber = document.getElementById('serialNumber').value;
+            var assetType = document.getElementById('assetType').value;
+
+            var tableBody = document.getElementById('dataBody');
+
+            var newRow = tableBody.insertRow(tableBody.rows.length);
+            var cells = [];
+
+            for (var i = 0; i < 6; i++) {
+                cells[i] = newRow.insertCell(i);
+            }
+
+            cells[0].innerHTML = guardianId;
+            cells[1].innerHTML = warrantyDate;
+            cells[2].innerHTML = assetCode;
+            cells[3].innerHTML = serialNumber;
+            cells[4].innerHTML = assetType;
+
+            var deleteButton = document.createElement('button');
+            deleteButton.innerHTML = 'ลบ';
+            deleteButton.className = 'delete-button';
+            deleteButton.onclick = function () {
+                var row = this.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+                updateLocalStorage();
+            };
+
+            cells[5].appendChild(deleteButton);
+
+            // Clear form fields after adding data
+            document.getElementById('dataForm').reset();
+
+            // Update data in local storage
+            updateLocalStorage();
+        }
+
+        function exportToExcel() {
+    var table = document.getElementById('dataBody');
+    var data = [];
+
+    // Collect data from the table
+    for (var i = 0; i < table.rows.length; i++) {
+        var rowData = [];
+        for (var j = 0; j < table.rows[i].cells.length - 1; j++) {
+            rowData.push(table.rows[i].cells[j].innerHTML);
+        }
+        data.push(rowData);
+    }
+
+    // Create Workbook and Worksheet
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.aoa_to_sheet(data);
+
+    // Add column headers
+    XLSX.utils.sheet_add_aoa(worksheet, [['ผู้ปกครอง', 'วันรับประกัน', 'รหัสทรัพย์สิน', 'Serial Number', 'ประเภท']], { origin: 'A1' });
+
+    // Add data from HTML table
+    XLSX.utils.sheet_add_aoa(worksheet, data, { origin: 'A2' });
+
+    // Add Worksheet to Workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+
+    // Create Excel file
+    XLSX.writeFile(workbook, 'exported_data.xlsx');
+
+    // Clear table data after exporting to Excel
+    table.innerHTML = '';
+}
+
+        function updateLocalStorage() {
+            var table = document.getElementById('dataBody');
+            var data = [];
+
+            // Collect data from the table
+            for (var i = 0; i < table.rows.length; i++) {
+                var rowData = {};
+                for (var j = 0; j < table.rows[i].cells.length - 1; j++) {
+                    rowData['col' + j] = table.rows[i].cells[j].innerHTML;
+                }
+                data.push(rowData);
+            }
+
+            // Update local storage with the new data
+            localStorage.setItem('assetData', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            var storedData = JSON.parse(localStorage.getItem('assetData')) || [];
+            var tableBody = document.getElementById('dataBody');
+
+            for (var i = 0; i < storedData.length; i++) {
+                var newRow = tableBody.insertRow(tableBody.rows.length);
+                var cells = [];
+
+                for (var j = 0; j < 6; j++) {
+                    cells[j] = newRow.insertCell(j);
+                    cells[j].innerHTML = storedData[i]['col' + j];
+                }
+
+                var deleteButton = document.createElement('button');
+                deleteButton.innerHTML = 'ลบ';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = function () {
+                    var row = this.parentNode.parentNode;
+                    row.parentNode.removeChild(row);
+                    updateLocalStorage();
+                };
+
+                cells[5].appendChild(deleteButton);
+            }
+        }
+
+        window.onload = function () {
+            loadFromLocalStorage();
+        };
+    </script>
+</body>
+
+</html>
