@@ -129,7 +129,20 @@
         function deleteRow(btn) {
             var row = btn.parentNode.parentNode;
             row.parentNode.removeChild(row);
+            updataLoclStorage();
         }
+
+        function updataLoclStorage() {
+        var tableRows = document.getElementById('qrcodeTableBoby').rows;
+        var data = [];
+        for (var i = 0; i < tableRows.length; i++) {
+        var name = tableRows[i].cells[1].innerText;
+        var url = tableRows[i].cells[2].innerText;
+        data.push({ name: name, url: url });
+    }
+
+    localStorage.setItem('qrcodeData', JSON.stringify(data));
+}    
         // โค้ดที่ใช้เพื่อโหลดข้อมูลจาก localStorage เมื่อหน้าเว็บโหลดขึ้นมา
 window.onload = function () {
     var storedData = JSON.parse(localStorage.getItem('qrcodeData')) || [];
