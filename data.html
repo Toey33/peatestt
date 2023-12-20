@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบอัพโหลดรูปภาพ</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f6f8fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #uploadContainer {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input {
+            margin-bottom: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 300px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f1f8ff;
+        }
+
+        #imageUrl {
+            word-break: break-all;
+            font-size: 14px;
+            color: #586069;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="uploadContainer">
+        <input type="file" id="uploadInput" onchange="previewImage()">
+        <br>
+        <img id="uploadedImage">
+        
+        <br><br>
+        
+        <p>URL รูปภาพ: <span id="imageUrl"></span></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>รูปภาพ</th>
+                    <th>URL</th>
+                </tr>
+            </thead>
+            <tbody id="imageTableBody">
+                <!-- ตารางจะปรากฏที่นี่ -->
+            </tbody>
+        </table>
+
+        <button onclick="rotateImage()">หมุนรูป</button>
+    </div>
+
+    <script>
+        let imageCounter = 1;
+
+        function previewImage() {
+            const input = document.getElementById('uploadInput');
+            const image = document.getElementById('uploadedImage');
+            const imageUrlSpan = document.getElementById('imageUrl');
+            
+            const file = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                image.src = e.target.result;
+                imageUrlSpan.textContent = e.target.result;
+                addToTable(imageCounter++, e.target.result);
+            }
+
+            reader.readAsDataURL(file);
+        }
+
+        function addToTable(counter, imageUrl) {
+            const tableBody = document.getElementById('imageTableBody');
+            const newRow = tableBody.insertRow();
+            
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+
+            cell1.textContent = counter;
+            
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.maxWidth = '100px';
+            img.style.maxHeight = '100px';
+            cell2.appendChild(img);
+
+            const urlSpan = document.createElement('span');
+            urlSpan.textContent = imageUrl;
+            urlSpan.style.wordBreak = 'break-all';
+            cell3.appendChild(urlSpan);
+        }
+
+        function rotateImage() {
+            const image = document.getElementById('uploadedImage');
+            const imageUrlSpan = document.getElementById('imageUrl');
+            
+            const currentRotation = (image.dataset.rotation || 0) % 360;
+            const newRotation = currentRotation + 90;
+
+            image.style.transform = `rotate(${newRotation}deg)`;
+            image.dataset.rotation = newRotation;
+
+            imageUrlSpan.textContent = `Rotated Image URL: ${image.src}`;
+        }
+    </script>
+
+</body>
+</html>
