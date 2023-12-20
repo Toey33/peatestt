@@ -55,6 +55,24 @@
             word-break: break-all;
             font-size: 14px;
             color: #586069;
+            max-height: 60px;
+            overflow: auto;
+            display: inline-block;
+        }
+
+        #imageUrl:hover {
+            position: relative;
+        }
+
+        #imageUrl:hover::after {
+            content: attr(data-url);
+            position: absolute;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #ddd;
+            z-index: 1;
+            max-width: 300px;
+            word-wrap: break-word;
         }
 
         button {
@@ -81,7 +99,7 @@
         
         <br><br>
         
-        <p>URL รูปภาพ: <span id="imageUrl"></span></p>
+        <p>URL รูปภาพ: <a href="" id="imageLink" target="_blank"><span id="imageUrl"></span></a></p>
 
         <table>
             <thead>
@@ -106,14 +124,18 @@
             const input = document.getElementById('uploadInput');
             const image = document.getElementById('uploadedImage');
             const imageUrlSpan = document.getElementById('imageUrl');
+            const imageLink = document.getElementById('imageLink');
             
             const file = input.files[0];
             const reader = new FileReader();
 
             reader.onload = function(e) {
                 image.src = e.target.result;
-                imageUrlSpan.textContent = e.target.result;
-                addToTable(imageCounter++, e.target.result);
+                const shortUrl = e.target.result.split(',')[1]; // ตัด URL ให้สั้นลง
+                imageUrlSpan.textContent = shortUrl;
+                imageUrlSpan.dataset.url = e.target.result; // เก็บ URL เต็มไว้ใน dataset
+                imageLink.href = shortUrl;
+                addToTable(imageCounter++, shortUrl);
             }
 
             reader.readAsDataURL(file);
@@ -144,6 +166,7 @@
         function rotateImage() {
             const image = document.getElementById('uploadedImage');
             const imageUrlSpan = document.getElementById('imageUrl');
+            const imageLink = document.getElementById('imageLink');
             
             const currentRotation = (image.dataset.rotation || 0) % 360;
             const newRotation = currentRotation + 90;
@@ -152,6 +175,8 @@
             image.dataset.rotation = newRotation;
 
             imageUrlSpan.textContent = `Rotated Image URL: ${image.src}`;
+            imageUrlSpan.dataset.url = image.src;
+            imageLink.href = image.src;
         }
     </script>
 
