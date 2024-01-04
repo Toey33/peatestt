@@ -160,6 +160,7 @@
             <div class="button-container">
                 <button type="button" onclick="addData()">เพิ่มข้อมูล</button>
                 <button type="button" onclick="exportToExcel()">บันทึกลง Excel</button>
+                <button type="button" onclick="importFromExcel()">นำเข้าจาก Excel</button>
             </div>
         </form>
 
@@ -300,7 +301,85 @@
         window.onload = function () {
             loadFromLocalStorage();
         };
+        
+        function importFromExcel() {
+    var input = document.createElement('input');
+    input.type = 'file';
+
+    input.addEventListener('change', function (e) {
+        var file = e.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var data = new Uint8Array(event.target.result);
+                var workbook = XLSX.read(data, { type: 'array' });
+                var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                var tableBody = document.getElementById('dataBody');
+
+                // Clear existing table data
+                tableBody.innerHTML = '';
+
+                // Loop through rows in the worksheet
+                XLSX.utils.sheet_to_json(worksheet, { header: 1 }).forEach(function (row) {
+                    var newRow = tableBody.insertRow(tableBody.rows.length);
+                    row.forEach(function (cellData, index) {
+                        var cell = newRow.insertCell(index);
+                        cell.innerHTML = cellData;
+                    });
+
+                    var deleteButton = document.createElement('button');
+                    deleteButton.innerHTML = 'ลบ';
+                    deleteButton.className = 'delete-button';
+                    deleteButton.onclick = function () {
+                        var row = this.parentNode.parentNode;
+                        row.parentNode.removeChild(row);
+                        updateLocalStorage();
+                    };
+
+                    newRow.insertCell(row.length).appendChild(deleteButton);
+                });
+
+                // Update local storage with the new data
+                updateLocalStorage();
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+    });
+
+    input.click();
+}
+
     </script>
+    <style>
+        /* ... (โค้ดที่มีอยู่ก่อนหน้านี้) ... */
+    
+        .button-container {
+            width: 100%;
+            display: flex;
+            justify-content: space-around; /* เปลี่ยนจาก space-between เป็น space-around */
+            margin-top: 10px;
+        }
+    
+        button {
+            width: 30%; /* เปลี่ยนจาก 48% เป็น 30% */
+            background-color: #28a745;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* เพิ่ม transition */
+        }
+    
+        button:hover {
+            background-color: #218838;
+        }
+    
+        /* ... (โค้ดที่มีอยู่ก่อนหน้านี้) ... */
+    </style>
+    
 </body>
 
 </html>
