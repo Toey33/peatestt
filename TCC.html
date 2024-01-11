@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <title>Image Text Editor with QR Code Table</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .text-overlay {
+            position: absolute;
+            top: 33%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 25px;
+            color: rgb(0, 0, 0);
+            text-align: center;
+        }
+
+        .text-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgb(0, 0, 0);
+            margin-top: 25px;
+            padding: 25px;
+        }
+
+        .text-item {
+            margin: 10px 0;
+        }
+
+        textarea {
+            margin: 10px 0;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px 10px 0 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+
+        input[type="text"]#searchInput {
+            margin-bottom: 10px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="image-container">
+                    <img id="image" src="https://toey33.github.io/PEAver1/imgs/mian.png" alt="Your Image" width="1080" height="875">
+                    <div class="text-overlay">
+                        <div class="text-container">
+                            <div class="text-item">ผู้ครอบครอง: <span id="ownerText"></span></div>
+                            <div class="text-item">วันรับประกัน: <span id="warrantyText"></span></div>
+                            <div class="text-item">รหัสทรัพย์สิน: <span id="assetIdText"></span></div>
+                            <div class="text-item">S/N: <span id="serialNumberText"></span></div>
+                            <div class="text-item">ประเภท: <span id="typeText"></span></div>
+                        </div>
+                    </div>
+                    <textarea id="ownerInput" class="form-control" placeholder="ผู้ครอบครอง"></textarea>
+                    <textarea id="warrantyInput" class="form-control" placeholder="วันรับประกัน"></textarea>
+                    <textarea id="assetIdInput" class="form-control" placeholder="รหัสทรัพย์สิน"></textarea>
+                    <textarea id="serialNumberInput" class="form-control" placeholder="S/N"></textarea>
+                    <textarea id="typeInput" class="form-control" placeholder="ประเภท"></textarea>
+                    <button onclick="saveText()" class="btn btn-success btn-sm">บันทึก</button>
+                    <button onclick="importExcelData()" class="btn btn-primary btn-sm">นำเข้าข้อมูลจาก Excel</button>
+                    <input type="text" id="searchInput" class="form-control" placeholder="ค้นหาข้อมูล" oninput="searchTable()">
+                    <input type="file" id="fileInput" style="display: none;" />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ผู้ครอบครอง</th>
+                                <th>วันรับประกัน</th>
+                                <th>รหัสทรัพย์สิน</th>
+                                <th>S/N</th>
+                                <th>ประเภท</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                            <!-- Data will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="image-container">
+                    <a href="PPTT.html">ดูรูปภาพและ QR Code</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function saveTableDataToLocalStorage() {
+            var tableData = [];
+            var tableRows = document.getElementById('dataTableBody').getElementsByTagName('tr');
+
+            for (var i = 0; i < tableRows.length; i++) {
+                var rowData = [];
+                var cells = tableRows[i].getElementsByTagName('td');
+
+                for (var j = 0; j < cells.length - 1; j++) {
+                    rowData.push(cells[j].innerText);
+                }
+
+                tableData.push(rowData);
+            }
+
+            localStorage.setItem('tableData', JSON.stringify(tableData));
+        }
+
+        function loadTableDataFromLocalStorage() {
+            var savedTableData = localStorage.getItem('tableData');
+
+            if (savedTableData) {
+                var tableData = JSON.parse(savedTableData);
+                updateTableWithData(tableData);
+            }
+        }
+
+        window.onload = function () {
+            loadTableDataFromLocalStorage();
+        };
+
+        window.onbeforeunload = function () {
+            saveTableDataToLocalStorage();
+        };
+
+        function importExcelData() {
+            document.getElementById('fileInput').click();
+        }
+
+        document.getElementById('fileInput').addEventListener('change', handleFile);
+
+        function handleFile(event) {
+            var fileInput = event.target;
+            var file = fileInput.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var data = new Uint8Array(event.target.result);
+                    var workbook = XLSX.read(data, { type: 'array' });
+                    var sheetName = workbook.SheetNames[0];
+                    var sheet = workbook.Sheets[sheetName];
+                    var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    updateTableWithData(jsonData);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        function updateTableWithData(data) {
+            // Clear existing table data
+            var tableBody = document.getElementById('dataTableBody');
+            tableBody.innerHTML = '';
+
+            // Add new data to table
+            for (var i = 0; i < data.length; i++) {
+                var row = tableBody.insertRow();
+                for (var j = 0; j < data[i].length; j++) {
+                    var cell = row.insertCell(j);
+                    cell.innerHTML = data[i][j];
+                }
+                addActionButtons(row, data[i][0], data[i][1], data[i][2], data[i][3], data[i][4]);
+            }
+        }
+
+        function deleteRow(row) {
+            var rowlndex = row.rowIndex;
+            document.getElementById('dataTableBody').deleteRow(rowlndex - 1);
+        }
+
+        function addActionButtons(row, owner, warranty, assetId, serialNumber, type) {
+            var cell6 = row.insertCell(5);
+
+            // View button
+            var viewButton = document.createElement('button');
+            viewButton.innerText = 'ดู';
+            viewButton.className = 'btn btn-info btn-sm mr-1';
+            viewButton.onclick = function () {
+                viewDataInImage(owner, warranty, assetId, serialNumber, type);
+            };
+            cell6.appendChild(viewButton);
+
+            // Delete button
+            var deleteButton = document.createElement('button');
+            deleteButton.innerText = 'ลบ';
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.onclick = function () {
+                var rowlndex = row.rowIndex;
+                deleteRow(row);
+            };
+            cell6.appendChild(deleteButton);
+        }
+
+        function deleteImageRow(row) {
+            var rowlndex = row.rowIndex
+            document.getElementById('dataTableBody').deleteRow(rowlndex);
+        }
+
+        function viewDataInImage(owner, warranty, assetId, serialNumber, type) {
+            document.getElementById('ownerText').innerText = owner;
+            document.getElementById('warrantyText').innerText = warranty;
+            document.getElementById('assetIdText').innerText = assetId;
+            document.getElementById('serialNumberText').innerText = serialNumber;
+            document.getElementById('typeText').innerText = type;
+
+            // Generate QR Code and add to image table
+            var qrCodeData = `Owner: ${owner}\nWarranty: ${warranty}\nAsset ID: ${assetId}\nS/N: ${serialNumber}\nType: ${type}`;
+            var qrCodeImage = generateQRCodeImage(qrCodeData);
+            addImageToTable(qrCodeImage, qrCodeData);
+        }
+
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("dataTableBody");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; // Change index based on the column you want to search
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function addImageToTable(imageData, qrCodeData) {
+            var tableBody = document.getElementById('dataTableBody');
+            var row = tableBody.insertRow();
+
+            // Column for image
+            var cellImage = row.insertCell(0);
+            var imageElement = document.createElement('img');
+            imageElement.src = imageData;
+            imageElement.alt = 'QR Code Image';
+            imageElement.width = 50;
+            cellImage.appendChild(imageElement);
+
+            // Column for QR code data
+            var cellQRCode = row.insertCell(1);
+            cellQRCode.innerText = qrCodeData;
+
+            // Column for Action
+            var cellAction = row.insertCell(2);
+            var deleteButton = document.createElement('button');
+            deleteButton.innerText = 'ลบ';
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.onclick = function () {
+                deleteImageRow(row);
+            };
+            cellAction.appendChild(deleteButton);
+        }
+
+        function deleteImageRow(row) {
+            var rowlndex = row.rowIndex;
+            document.getElementById('dataTableBody').deleteRow(rowlndex - 1);
+        }
+
+        function generateQRCodeImage(data) {
+            var qrCode = new QRCode(document.createElement('div'), {
+                text: data,
+                width: 50,
+                height: 50,
+            });
+            return qrCode._el.firstChild.toDataURL("image/png");
+        }
+        
+        function saveText() {
+            var ownerInput = document.getElementById('ownerInput').value;
+            var warrantyInput = document.getElementById('warrantyInput').value;
+            var assetIdInput = document.getElementById('assetIdInput').value;
+            var serialNumberInput = document.getElementById('serialNumberInput').value;
+            var typeInput = document.getElementById('typeInput').value;
+
+            var tableBody = document.getElementById('dataTableBody');
+            var row = tableBody.insertRow();
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
+           cell1.innerHTML = ownerInput;
+           cell2.innerHTML = warrantyInput;
+           cell3.innerHTML = assetIdInput;
+           cell4.innerHTML = serialNumberInput;
+           cell5.innerHTML = typeInput;
+
+    addActionButtons(row, ownerInput, warrantyInput, assetIdInput, serialNumberInput, typeInput);
+
+    // Clear input fields
+     document.getElementById('ownerInput').value = '';
+    document.getElementById('warrantyInput').value = '';
+    document.getElementById('assetIdInput').value = '';
+    document.getElementById('serialNumberInput').value = '';
+    document.getElementById('typeInput').value = '';
+}
+
+    </script>
+</body>
+
+</html>
