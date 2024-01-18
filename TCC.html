@@ -32,7 +32,7 @@
 
         .text-overlay {
             position: absolute;
-            top: 33%;
+            top: 32%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 25px;
@@ -67,6 +67,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-right: 5px;
         }
 
         table {
@@ -138,7 +139,6 @@
                     </table>
                 </div>
                 <div class="image-container">
-                    <a href="PPTT.html">ดูรูปภาพและ QR Code</a>
                 </div>
             </div>
         </div>
@@ -258,11 +258,6 @@
             document.getElementById('assetIdText').innerText = assetId;
             document.getElementById('serialNumberText').innerText = serialNumber;
             document.getElementById('typeText').innerText = type;
-
-            // Generate QR Code and add to image table
-            var qrCodeData = `Owner: ${owner}\nWarranty: ${warranty}\nAsset ID: ${assetId}\nS/N: ${serialNumber}\nType: ${type}`;
-            var qrCodeImage = generateQRCodeImage(qrCodeData);
-            addImageToTable(qrCodeImage, qrCodeData);
         }
 
         function searchTable() {
@@ -284,45 +279,12 @@
             }
         }
 
-        function addImageToTable(imageData, qrCodeData) {
-            var tableBody = document.getElementById('dataTableBody');
-            var row = tableBody.insertRow();
-
-            // Column for image
-            var cellImage = row.insertCell(0);
-            var imageElement = document.createElement('img');
-            imageElement.src = imageData;
-            imageElement.alt = 'QR Code Image';
-            imageElement.width = 50;
-            cellImage.appendChild(imageElement);
-
-            // Column for QR code data
-            var cellQRCode = row.insertCell(1);
-            cellQRCode.innerText = qrCodeData;
-
-            // Column for Action
-            var cellAction = row.insertCell(2);
-            var deleteButton = document.createElement('button');
-            deleteButton.innerText = 'ลบ';
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.onclick = function () {
-                deleteImageRow(row);
-            };
-            cellAction.appendChild(deleteButton);
-        }
+ 
 
         function deleteImageRow(row) {
             var rowlndex = row.rowIndex;
             document.getElementById('dataTableBody').deleteRow(rowlndex - 1);
-        }
-
-        function generateQRCodeImage(data) {
-            var qrCode = new QRCode(document.createElement('div'), {
-                text: data,
-                width: 50,
-                height: 50,
-            });
-            return qrCode._el.firstChild.toDataURL("image/png");
+    
         }
         
         function saveText() {
@@ -354,8 +316,7 @@
     document.getElementById('serialNumberInput').value = '';
     document.getElementById('typeInput').value = '';
 }
-
-    </script>
+</script>
 </body>
 
 </html>
